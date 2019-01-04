@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SponsorableSlot extends Model
 {
+    protected $guarded = [];
+
     public function scopeSponsorable($query)
     {
         return $query

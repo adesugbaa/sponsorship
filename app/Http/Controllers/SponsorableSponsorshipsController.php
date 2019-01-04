@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Sponsorable;
+use App\Sponsorship;
+use App\SponsorableSlot;
 
 class SponsorableSponsorshipsController extends Controller
 {
@@ -17,5 +19,16 @@ class SponsorableSponsorshipsController extends Controller
             'sponsorable' => $sponsorable,
             'sponsorableSlots' => $sponsorableSlots
         ]);
+    }
+
+    public function store($slug)
+    {
+        $sponsorship = Sponsorship::create();
+
+        $slots = SponsorableSlot::whereIn('id', request('sponsorable_slots'))->get();
+        //dd($slots);
+        $slots->each->update(['sponsorship_id' => $sponsorship->id]);
+
+        return response()->json([], 201);
     }
 }
