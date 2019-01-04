@@ -39,6 +39,7 @@ $factory->define(App\SponsorableSlot::class, function (Faker $faker) {
 $factory->define(App\Sponsorship::class, function (Faker $faker) {
   return [
     'email' => 'john@example.com',
-    'company_name' => 'DigitalTechnosoft Inc.'
+    'company_name' => 'ExampleSoft Inc.',
+    'amount' => 5000,
   ];
 });

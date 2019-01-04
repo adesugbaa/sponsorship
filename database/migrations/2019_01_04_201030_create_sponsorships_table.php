@@ -17,6 +17,7 @@ class CreateSponsorshipsTable extends Migration
             $table->increments('id');
             $table->string('email');
             $table->string('company_name');
+            $table->unsignedInteger('amount');
             $table->timestamps();
         });
     }

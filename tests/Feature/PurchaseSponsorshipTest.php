@@ -50,7 +50,8 @@ class PurchaseSponsorshipTest extends TestCase
         $sponsorship = SponsorShip::first();
 
         $this->assertEquals('john@example.com', $sponsorship->email);
-        $this->assertEquals('DigitalTechnosoft Inc.', $sponsorship->company_name );
+        $this->assertEquals('DigitalTechnosoft Inc.', $sponsorship->company_name);
+        $this->assertEquals(75000, $sponsorship->amount);
 
         $this->assertEquals($sponsorship->getKey(), $slotA->fresh()->sponsorship_id);
         $this->assertEquals($sponsorship->getKey(), $slotC->fresh()->sponsorship_id);
