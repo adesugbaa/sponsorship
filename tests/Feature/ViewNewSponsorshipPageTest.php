@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Purchase;
+use App\Sponsorship;
 use App\Sponsorable;
 use App\SponsorableSlot;
-use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,7 +32,7 @@ class ViewNewSponsorshipPageTest extends TestCase
     }
 
     /** @test */
-    function sponsoroble_slots_are_listed_in_chronological_order()
+    function sponsorable_slots_are_listed_in_chronological_order()
     {
         $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
 
@@ -54,7 +53,7 @@ class ViewNewSponsorshipPageTest extends TestCase
     }
 
     /** @test */
-    function only_upcoming_sponsoroble_slots_are_listed_in_chronological_order()
+    function only_upcoming_sponsorable_slots_are_listed_in_chronological_order()
     {
         $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
 
@@ -75,14 +74,14 @@ class ViewNewSponsorshipPageTest extends TestCase
     }
 
     /** @test */
-    function only_purchasable_sponsoroble_slots_are_listed()
+    function only_purchasable_sponsorable_slots_are_listed()
     {
         $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
-        $purchase = factory(Purchase::class)->create();
+        $sponsorship = factory(Sponsorship::class)->create();
 
         $slotA = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(1)]);
-        $slotB = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(2), 'purchase_id' => $purchase]);
-        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(3), 'purchase_id' => $purchase]);
+        $slotB = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(2), 'sponsorship_id' => $sponsorship]);
+        $slotC = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(3), 'sponsorship_id' => $sponsorship]);
         $slotD = factory(SponsorableSlot::class)->create(['sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(4)]);
 
         $response = $this->get('/full-stack-radio/sponsorships/new');
