@@ -25,18 +25,20 @@ $factory->define(App\User::class, function (Faker $faker) {
 
 $factory->define(App\Sponsorable::class, function (Faker $faker) {
   return [
-
+    'name' => 'Example Poscast',
   ];
 });
 
 $factory->define(App\SponsorableSlot::class, function (Faker $faker) {
   return [
+    'price' => 25000,
     'publish_date' => now()->addMonths(1),
   ];
 });
 
 $factory->define(App\Sponsorship::class, function (Faker $faker) {
   return [
-
+    'email' => 'john@example.com',
+    'company_name' => 'DigitalTechnosoft Inc.'
   ];
 });

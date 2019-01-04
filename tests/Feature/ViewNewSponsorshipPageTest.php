@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\PaymentGateway;
 use App\Sponsorship;
 use App\Sponsorable;
 use App\SponsorableSlot;
+use Tests\FakePaymentGateway;
 use Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,6 +15,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ViewNewSponsorshipPageTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $paymentGateway;
+
+    function setUp()
+    {
+        parent::setUp();
+        
+        $paymentGateway = $this->app->instance(PaymentGateway::class, new FakePaymentGateway);
+    }
 
     /** @test */
     function viewing_the_new_sponsorship_page()

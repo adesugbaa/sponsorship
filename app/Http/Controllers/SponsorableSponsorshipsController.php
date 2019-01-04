@@ -9,6 +9,13 @@ use App\SponsorableSlot;
 
 class SponsorableSponsorshipsController extends Controller
 {
+    private $paymentGateway;
+
+    public function __construct($paymentGateway)
+    {
+        $this->paymentGateway = $paymentGateway;
+    }
+
     public function new($slug)
     {
         $sponsorable = Sponsorable::findOrFailBySlug($slug);
@@ -23,10 +30,18 @@ class SponsorableSponsorshipsController extends Controller
 
     public function store($slug)
     {
-        $sponsorship = Sponsorship::create();
+        $sponsorable = Sponsorable::findOrFailBySlug($slug);
+        $sponsorship = Sponsorship::create([
+            'email' => request('email'),
+            'company_name' => request('company_name'),
+        ]);
 
         $slots = SponsorableSlot::whereIn('id', request('sponsorable_slots'))->get();
-        //dd($slots);
+        
+        //$amountToCharge = $slots->sum('price');
+
+        $this->paymentGateway->charge(request('email'), $slots->sum('price'), request('token'), "{$sponsorable->name} sponsorship");
+
         $slots->each->update(['sponsorship_id' => $sponsorship->id]);
 
         return response()->json([], 201);
