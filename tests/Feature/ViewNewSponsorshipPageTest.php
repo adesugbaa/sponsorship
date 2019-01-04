@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class NewSponsorshipTest extends TestCase
+class ViewNewSponsorshipPageTest extends TestCase
 {
     use RefreshDatabase;
 
