@@ -38,6 +38,7 @@ class PurchaseSponsorshipTest extends TestCase
         $response = $this->postJson('/full-stack-radio/sponsorships', [
             'email' => 'john@example.com',
             'company_name' => 'DigitalTechnosoft Inc.',
+            'payment_token' => self::$paymentGateway->validTestToken(),
             'sponsorable_slots' => [
                 $slotA->getKey(),
                 $slotC->getKey(),
@@ -64,5 +65,32 @@ class PurchaseSponsorshipTest extends TestCase
         $this->assertEquals('john@example.com', $charge->email());
         $this->assertEquals(75000, $charge->amount());
         $this->assertEquals('Full Stack Radio sponsorship', $charge->description());
+    }
+
+    /** @test */
+    function a_valid_payment_token_is_required()
+    {
+        //$this->markTestSkipped();
+        
+        $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
+
+        $slot = factory(SponsorableSlot::class)->create(['price' => 50000, 'sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(1)]);
+
+        $response = $this->postJson('/full-stack-radio/sponsorships', [
+            'email' => 'john@example.com',
+            'company_name' => 'DigitalTechnosoft Inc.',
+            'payment_token' => 'not-a-valid-token',
+            'sponsorable_slots' => [
+                $slot->getKey(),
+            ]
+        ]);
+
+        $response->assertStatus(422);
+
+        $this->assertEquals(0, SponsorShip::count());
+
+        $this->assertNull($slot->fresh()->sponsorship_id);
+
+        $this->assertCount(0, self::$paymentGateway->charges());
     }
 }

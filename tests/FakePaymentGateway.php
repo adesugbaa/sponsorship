@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Charge;
+use App\Exceptions\PaymentFailedException;
 use Illuminate\Support\Collection;
 
 class FakePaymentGateway
@@ -21,6 +22,10 @@ class FakePaymentGateway
 
     public function charge($email, $amount, $token, $description)
     {
+        if ($token !== $this->validTestToken()) {
+            throw new PaymentFailedException;
+        }
+
         $this->charges->push(new Charge($email, $amount, $description));
     }
 
