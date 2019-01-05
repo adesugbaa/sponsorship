@@ -39,7 +39,9 @@ class SponsorableSponsorshipsController extends Controller
             ]);
 
             $sponsorable = Sponsorable::findOrFailBySlug($slug);
-            $slots = SponsorableSlot::whereIn('id', request('sponsorable_slots'))->get();
+            $slots = $sponsorable->slots()->whereIn('id', request('sponsorable_slots'))->get();
+            
+            abort_unless($slots->count() === count(request('sponsorable_slots')), 400);
 
             $this->paymentGateway->charge(request('email'), $slots->sum('price'), request('payment_token'), "{$sponsorable->name} sponsorship");
 
