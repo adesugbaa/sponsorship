@@ -54,7 +54,7 @@ class SponsorableSponsorshipsController extends Controller
                 //'sposonrable_slots.*' => 'exists:sponsorable_slots;sponsorable_id;$sponsorable->getKey()'
             ]);
             
-            $slots = $sponsorable->slots()->findOrFail(request('sponsorable_slots'));
+            $slots = $sponsorable->slots()->sponsorable()->findOrFail(request('sponsorable_slots'));
             //$slots = $sponsorable->slots()->whereIn('id', request('sponsorable_slots'))->get();
             //abort_unless($slots->count() === count(request('sponsorable_slots')), 400);
 

@@ -309,4 +309,31 @@ class PurchaseSponsorshipTest extends TestCase
         $this->assertNull($otherSlot->fresh()->sponsorship_id);
         $this->assertCount(0, self::$paymentGateway->charges());
     }
+
+    /** @test */
+    function cannot_sponsor_slots_that_are_already_sponsored()
+    {   
+        $sponsorable = factory(Sponsorable::class)->create(['slug' => 'full-stack-radio']);
+        $sponsorship = factory(Sponsorship::class)->create();
+
+        $slotA = factory(SponsorableSlot::class)->create(['sponsorship_id' => null, 'price' => 50000, 'sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(1)]);
+        $slotB = factory(SponsorableSlot::class)->create(['sponsorship_id' => $sponsorship, 'price' => 30000, 'sponsorable_id' => $sponsorable, 'publish_date' => now()->addMonth(2)]);
+
+        $response = $this->withExceptionHandling()->postJson('/full-stack-radio/sponsorships', [
+            'email' => 'john@example.com',
+            'company_name' => 'DigitalTechnosoft Inc.',
+            'payment_token' => self::$paymentGateway->validTestToken(),
+            'sponsorable_slots' => [
+                $slotA->getKey(),
+                $slotB->getKey(),
+            ]
+        ]);
+
+        $response->assertStatus(404);
+
+        $this->assertEquals(1, SponsorShip::count());
+        $this->assertNull($slotA->fresh()->sponsorship_id);
+        $this->assertEquals($sponsorship->getKey(), $slotB->fresh()->sponsorship_id);
+        $this->assertCount(0, self::$paymentGateway->charges());
+    }
 }
